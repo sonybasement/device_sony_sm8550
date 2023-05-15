@@ -4,6 +4,6 @@
 //
 
 runtime_resource_overlay {
-    name: "SonySagamiSettingsResCommon",
+    name: "SonyNagaraSystemUIResCommon",
     device_specific: true,
 }

@@ -4,6 +4,6 @@
 //
 
 runtime_resource_overlay {
-    name: "SonySagamiFrameworksResCommon",
+    name: "SonyNagaraFrameworksResCommon",
     device_specific: true,
 }

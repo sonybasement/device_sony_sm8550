@@ -4,6 +4,6 @@
 //
 
 runtime_resource_overlay {
-    name: "SonySagamiTelephonyResCommon",
-    product_specific: true,
+    name: "SonyNagaraSettingsResCommon",
+    device_specific: true,
 }
