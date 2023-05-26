@@ -21,16 +21,16 @@ $(call inherit-product, $(SRC_TARGET_DIR)/product/emulated_storage.mk)
 $(call inherit-product, $(SRC_TARGET_DIR)/product/updatable_apex.mk)
 
 # Enable virtual A/B OTA
-$(call inherit-product, $(SRC_TARGET_DIR)/product/virtual_ab_ota/launch_with_vendor_ramdisk.mk)
+$(call inherit-product, $(SRC_TARGET_DIR)/product/virtual_ab_ota/android_t_baseline.mk)
 
 # Setup dalvik vm configs
 $(call inherit-product, frameworks/native/build/phone-xhdpi-6144-dalvik-heap.mk)
 
 # Include common vendor stuff
-$(call inherit-product, vendor/sony/sm8450-common/sm8450-common-vendor.mk)
+$(call inherit-product, vendor/sony/sm8550-common/sm8550-common-vendor.mk)
 
 # VNDK
-PRODUCT_SHIPPING_API_LEVEL := 31
+PRODUCT_SHIPPING_API_LEVEL := 33
 
 # Additional native libraries
 PRODUCT_COPY_FILES += \
@@ -43,11 +43,11 @@ DEVICE_PACKAGE_OVERLAYS += \
 PRODUCT_ENFORCE_RRO_TARGETS := *
 PRODUCT_PACKAGES += \
     CarrierConfigResCommon \
-    SonyNagaraFrameworksResCommon \
-    SonyNagaraSettingsProviderOverlayCommon \
-    SonyNagaraSettingsResCommon \
-    SonyNagaraSystemUIResCommon \
-    SonyNagaraTelephonyResCommon \
+    SonyYodoFrameworksResCommon \
+    SonyYodoSettingsProviderOverlayCommon \
+    SonyYodoSettingsResCommon \
+    SonyYodoSystemUIResCommon \
+    SonyYodoTelephonyResCommon \
     WifiResCommon
 
 # Permissions
@@ -65,6 +65,7 @@ PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.camera.raw.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.camera.raw.xml \
     frameworks/native/data/etc/android.hardware.camera.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.camera.xml \
     frameworks/native/data/etc/android.hardware.fingerprint.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.fingerprint.xml \
+    frameworks/native/data/etc/android.hardware.keystore.app_attest_key.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.keystore.app_attest_key.xml \
     frameworks/native/data/etc/android.hardware.location.gps.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.location.gps.xml \
     frameworks/native/data/etc/android.hardware.nfc.hce.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.nfc.hce.xml \
     frameworks/native/data/etc/android.hardware.nfc.hcef.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.nfc.hcef.xml \
@@ -85,6 +86,7 @@ PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.sensor.stepdetector.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/sku_taro/android.hardware.sensor.stepdetector.xml \
     frameworks/native/data/etc/android.hardware.telephony.gsm.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.telephony.gsm.xml \
     frameworks/native/data/etc/android.hardware.telephony.ims.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.telephony.ims.xml \
+    frameworks/native/data/etc/android.hardware.telephony.mbms.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.telephony.mbms.xml \
     frameworks/native/data/etc/android.hardware.touchscreen.multitouch.jazzhand.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.touchscreen.multitouch.jazzhand.xml \
     frameworks/native/data/etc/android.hardware.usb.accessory.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.usb.accessory.xml \
     frameworks/native/data/etc/android.hardware.usb.host.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.usb.host.xml \
@@ -120,6 +122,8 @@ PRODUCT_PACKAGES += \
     checkpoint_gc \
     otapreopt_script
 
+PRODUCT_VIRTUAL_AB_COMPRESSION_METHOD := gz
+
 # ANT+
 PRODUCT_PACKAGES += \
     AntHalService-Soong \
@@ -131,21 +135,20 @@ PRODUCT_PACKAGES += \
 
 # Audio
 PRODUCT_PACKAGES += \
-    android.hardware.audio@7.0-impl \
+    android.hardware.audio@7.1-impl \
     android.hardware.audio.effect@7.0-impl \
     android.hardware.audio.service \
-    android.hardware.bluetooth.audio@2.0-impl \
+    android.hardware.bluetooth.audio-impl \
     android.hardware.soundtrigger@2.3-impl \
     tinyplay \
-    tinymix \
-    audio_amplifier.taro
+    tinymix
 
 PRODUCT_PACKAGES += \
     audio.bluetooth.default \
-    audio.primary.taro \
+    audio.primary.kalama \
     audio.r_submix.default \
     audio.usb.default \
-    sound_trigger.primary.taro
+    sound_trigger.primary.kalama
 
 PRODUCT_PACKAGES += \
     audioadsprpcd \
@@ -162,10 +165,15 @@ PRODUCT_PACKAGES += \
     libreverbwrapper \
     libvisualizer \
     libvolumelistener \
-    vendor.qti.hardware.AGMIPC@1.0-service \
-    vendor.qti.hardware.pal@1.0-impl
 
-AUDIO_HAL_DIR := hardware/qcom-caf/sm8450/audio
+AUDIO_HAL_DIR := hardware/qcom-caf/sm8550/audio
+
+# Audio Configs
+PRODUCT_COPY_FILES += \
+    $(AUDIO_HAL_DIR)/configs/common/audio_policy_configuration.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio_policy_configuration.xml \
+    $(AUDIO_HAL_DIR)/configs/kalama/audio_effects.conf:$(TARGET_COPY_OUT_VENDOR)/etc/audio/sku_kalama/audio_effects.conf \
+    $(AUDIO_HAL_DIR)/configs/kalama/audio_effects.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio/sku_kalama/audio_effects.xml \
+    $(call find-copy-subdir-files,*,$(LOCAL_PATH)/audio/,$(TARGET_COPY_OUT_VENDOR)/etc/sku_kalama)
 
 # Audio Policies
 PRODUCT_COPY_FILES += \
@@ -179,10 +187,6 @@ PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.audio.low_latency.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.audio.low_latency.xml \
     frameworks/native/data/etc/android.hardware.audio.pro.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.audio.pro.xml \
     frameworks/native/data/etc/android.software.midi.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.midi.xml
-
-# Audio
-PRODUCT_COPY_FILES += \
-    $(call find-copy-subdir-files,*,$(LOCAL_PATH)/audio/,$(TARGET_COPY_OUT_VENDOR)/etc/sku_taro)
 
 # Authsecret
 PRODUCT_PACKAGES += \
@@ -206,11 +210,12 @@ PRODUCT_PACKAGES_DEBUG += \
 
 # Camera
 PRODUCT_PACKAGES += \
-    android.hardware.camera.device@3.5.vendor \
-    android.hardware.camera.provider@2.7.vendor \
+    android.hardware.camera.provider-V1-ndk.vendor \
+    android.hardware.camera.device@3.4.vendor \
+    android.hardware.camera.provider@2.4.vendor \
     android.hardware.camera.common@1.0.vendor \
     vendor.qti.hardware.camera.postproc@1.0.vendor \
-    vendor.qti.hardware.camera.aon@1.0.vendor \
+    vendor.qti.hardware.camera.aon@1.3.vendor \
     libcamera2ndk_vendor \
 
 # Common init scripts
@@ -233,21 +238,18 @@ PRODUCT_PACKAGES += \
 
 # Display
 PRODUCT_PACKAGES += \
-    libdisplayconfig.qti \
-    libqdMetaData \
-    libtinyxml \
     init.qti.display_boot.rc \
     init.qti.display_boot.sh \
     android.hardware.graphics.mapper@4.0-impl-qti-display \
-    android.hardware.memtrack@1.0-impl \
-    android.hardware.memtrack@1.0-service \
-    init.qti.display_boot.sh \
+    libdisplayconfig.qti \
     libdisplayconfig.system.qti \
+    libqdMetaData \
     libqdMetaData.system \
     libsdmcore \
     libsdmutils \
-    vendor.display.config@1.5 \
-    vendor.display.config@1.15.vendor \
+    libtinyxml \
+    vendor.display.config@1.7 \
+    vendor.display.config@1.11.vendor \
     vendor.display.config@2.0 \
     vendor.display.config@2.0.vendor \
     vendor.qti.hardware.display.allocator-service \
@@ -266,7 +268,8 @@ PRODUCT_PACKAGES += \
     vendor.qti.hardware.display.config-V2-ndk.vendor \
     vendor.qti.hardware.display.config-V3-ndk.vendor \
     vendor.qti.hardware.display.config-V4-ndk.vendor \
-    vendor.qti.hardware.display.config-V5-ndk.vendor 
+    vendor.qti.hardware.display.config-V5-ndk.vendor \
+    vendor.qti.hardware.display.config-V6-ndk.vendor \
 
 # DRM
 PRODUCT_PACKAGES += \
@@ -324,14 +327,10 @@ PRODUCT_PACKAGES += \
 
 # Keymint
 PRODUCT_PACKAGES += \
+    android.hardware.hardware_keystore.xml \
     android.hardware.security.keymint-V1-ndk.vendor \
     android.hardware.security.secureclock-V1-ndk.vendor \
     android.hardware.security.sharedsecret-V1-ndk.vendor
-
-# Keystore
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/android.hardware.hardware_keystore.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.hardware_keystore.xml \
-    $(LOCAL_PATH)/configs/android.hardware.strongbox_keystore.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.strongbox_keystore.xml
 
 # Media
 PRODUCT_COPY_FILES += \
@@ -349,11 +348,6 @@ PRODUCT_PACKAGES += \
     libavservices_minijail_vendor \
     libcodec2_hidl@1.2.vendor \
     android.hardware.media.c2@1.2.vendor
-
-# Media (Device)
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/media/media_codecs_performance_taro_vendor.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_codecs_performance_taro.xml \
-    $(LOCAL_PATH)/media/media_codecs_taro_vendor.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_codecs_taro_vendor.xml
 
 # Light
 PRODUCT_PACKAGES += \
@@ -389,7 +383,7 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     android.hardware.power-service-qti \
     android.hardware.power@1.2.vendor \
-    vendor.qti.hardware.perf@2.2.vendor
+    vendor.qti.hardware.perf@2.3.vendor
 
 # QMI
 PRODUCT_PACKAGES += \
@@ -408,7 +402,9 @@ PRODUCT_PACKAGES += \
     librmnetctl \
     libxml2 \
     extphonelib \
-    extphonelib.xml
+    extphonelib-product \
+    extphonelib.xml \
+    extphonelib_product.xml \
 
 # Sensors
 PRODUCT_PACKAGES += \
@@ -443,9 +439,13 @@ PRODUCT_PACKAGES += \
     ims-ext-common \
     ims_ext_common.xml \
     qti-telephony-hidl-wrapper \
+    qti-telephony-hidl-wrapper-prd \
     qti_telephony_hidl_wrapper.xml \
+    qti_telephony_hidl_wrapper_prd.xml \
     qti-telephony-utils \
+    qti-telephony-utils-prd \
     qti_telephony_utils.xml \
+    qti_telephony_utils_prd.xml \
     telephony-ext
 
 PRODUCT_BOOT_JARS += \
@@ -456,7 +456,7 @@ PRODUCT_COPY_FILES += \
 
 # Thermal
 PRODUCT_PACKAGES += \
-    android.hardware.thermal@2.0-service.qti
+    android.hardware.thermal@2.0-service.qti-v2
 
 # Touch
 PRODUCT_PACKAGES += \
@@ -501,13 +501,11 @@ PRODUCT_PACKAGES += \
 # WiFi
 PRODUCT_PACKAGES += \
     android.hardware.wifi@1.0-service \
+    android.hardware.wifi.hostapd@1.0.vendor \
     hostapd \
     libwpa_client \
     libwifi-hal-ctrl \
     libwifi-hal-qcom \
-    vendor.qti.hardware.wifi.hostapd@1.2.vendor \
-    vendor.qti.hardware.wifi.supplicant@2.1.vendor \
-    WifiResCommon \
     wpa_supplicant \
     wpa_supplicant.conf
 

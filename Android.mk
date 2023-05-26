@@ -6,7 +6,7 @@
 
 LOCAL_PATH := $(call my-dir)
 
-ifneq ($(filter pdx223 pdx224,$(TARGET_DEVICE)),)
+ifneq ($(filter pdx234,$(TARGET_DEVICE)),)
 include $(call all-makefiles-under,$(LOCAL_PATH))
 
 include $(CLEAR_VARS)
@@ -196,14 +196,10 @@ $(RFS_MSM_WPSS_SYMLINKS): $(LOCAL_INSTALLED_MODULE)
 WIFI_FIRMWARE_SYMLINKS := $(TARGET_OUT_VENDOR)/firmware/
 $(WIFI_FIRMWARE_SYMLINKS): $(LOCAL_INSTALLED_MODULE)
 	@echo "Creating wifi firmware symlinks: $@"
-	@mkdir -p $@/wlan/qca_cld
-	$(hide) ln -sf /vendor/etc/wifi/regdb.bin $@/regdb.bin
-	$(hide) ln -sf /vendor/etc/wifi/bdwlan.e47 $@/bdwlan.e47
-	$(hide) ln -sf /vendor/etc/wifi/bdwlan.e48 $@/bdwlan.e48
-	$(hide) ln -sf /vendor/etc/wifi/bdwlan.elf $@/bdwlan.elf
+	@mkdir -p $@/wlan/qca_cld/qca6490
 	$(hide) ln -sf /data/vendor/firmware/wlanmdsp.mbn $@/wlanmdsp.otaupdate
-	$(hide) ln -sf /mnt/vendor/persist/wlan_mac.bin $@/wlan/qca_cld/wlan_mac.bin
-	$(hide) ln -sf /vendor/etc/wifi/WCNSS_qcom_cfg.ini $@/wlan/qca_cld/WCNSS_qcom_cfg.ini
+	$(hide) ln -sf /mnt/vendor/persist/qca6490/wlan_mac.bin $@/wlan/qca_cld/qca6490/wlan_mac.bin
+	$(hide) ln -sf /odm/vendor/etc/wifi/WCNSS_qcom_cfg.ini $@/wlan/qca_cld/qca6490/WCNSS_qcom_cfg.ini
 
 ALL_DEFAULT_INSTALLED_MODULES += \
     $(ACDBDATA_SYMLINKS) \

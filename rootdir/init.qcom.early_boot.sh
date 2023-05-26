@@ -1,7 +1,7 @@
 #! /vendor/bin/sh
 
 # Copyright (c) 2012-2013,2016,2018-2020 The Linux Foundation. All rights reserved.
-# Copyright 2021 Sony Corporation
+# Copyright 2022 Sony Corporation
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -413,8 +413,8 @@ case "$baseband" in
 esac
 
 #For wifi driver
-default_ini=/vendor/etc/wifi/WCNSS_qcom_cfg.ini
-customized_ini=/mnt/vendor/persist/wifi/WCNSS_qcom_cfg.ini
+default_ini=/vendor/etc/wifi/kiwi_v2/WCNSS_qcom_cfg.ini
+customized_ini=/mnt/vendor/persist/wifi/kiwi_v2/WCNSS_qcom_cfg.ini
 cat $default_ini > $customized_ini
 gWifi6eCCList=`getprop ro.vendor.sony.wlan.6e_cc_list`
 if [ $gWifi6eCCList ]; then
